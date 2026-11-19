@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101b18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Nutrition">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>My Nutrition Tracker</title>
+<style>
+:root{--bg:#f4f6f3;--card:#fff;--ink:#17231e;--muted:#718078;--line:#e4eae5;--green:#19865b;--soft:#e8f4ed;--red:#b94b4b;--shadow:0 8px 28px rgba(18,40,28,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 calc(22px + env(safe-area-inset-bottom))}
+.wrap{max-width:620px;margin:auto;padding:18px 16px 30px}.top{display:flex;justify-content:space-between;align-items:center;margin:5px 2px 20px}.brand{font-size:23px;font-weight:800;letter-spacing:-.7px}.sub{font-size:11px;letter-spacing:1.4px;color:var(--muted);margin-top:3px}.mark{width:43px;height:43px;border-radius:15px;background:#dff1e6;display:grid;place-items:center;font-size:23px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:#e9eee9;padding:4px;border-radius:14px;margin-bottom:15px}.tab{border:0;background:transparent;padding:11px 4px;border-radius:11px;font-weight:650;color:#65736b}.tab.active{background:white;color:var(--ink);box-shadow:0 2px 7px #1b332012}
+.card{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:17px;margin-bottom:13px;box-shadow:var(--shadow)}.hero{background:#14251e;color:#fff;border:0}.eyebrow{font-size:11px;letter-spacing:1.2px;color:var(--muted);font-weight:700}.hero .eyebrow{color:#b7c9bf}.calrow{display:flex;align-items:baseline;gap:6px;margin:7px 0 12px}.cal{font-size:37px;font-weight:800;letter-spacing:-1.5px}.goal{color:#bdc9c1;font-size:14px}.progress{height:9px;border-radius:99px;background:#34473e;overflow:hidden}.progress>div{height:100%;background:#55c58a;border-radius:99px;width:0}.remain{display:flex;justify-content:space-between;color:#c6d2ca;font-size:12px;margin-top:9px}.macros{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.macro{border-left:1px solid #405148;padding-left:10px}.macro:first-child{border:0;padding-left:0}.macro span{display:block;color:#b7c9bf;font-size:11px}.macro b{font-size:20px;display:block;margin-top:4px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px;font-weight:750}.datebar{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.datebar button,.iconbtn{border:1px solid var(--line);background:white;border-radius:11px;padding:8px 12px;color:var(--ink);font-size:16px}.datebar input{border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;background:white;max-width:155px}.meal{padding:14px 0;border-top:1px solid var(--line)}.meal:first-of-type{border-top:0}.mealhead{display:flex;justify-content:space-between;align-items:center;font-weight:700}.mealitems{font-size:13px;color:var(--muted);line-height:1.45;margin-top:5px;white-space:pre-wrap}.mealfoot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;color:var(--muted)}.mealfoot b{color:var(--ink);font-size:14px}.actions{display:flex;gap:7px}.smallbtn{border:0;background:#f0f4f0;border-radius:8px;padding:6px 9px;color:#526159}.primary{width:100%;border:0;border-radius:13px;background:var(--green);color:white;padding:14px;font-size:15px;font-weight:750}.secondary{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:12px;font-weight:650}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;color:var(--muted);font-weight:650}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:11px;background:#fff;padding:12px;font:inherit;color:var(--ink);min-width:0}.field textarea{min-height:75px;resize:vertical}.wide{grid-column:1/-1}.muted{color:var(--muted);font-size:12px;line-height:1.5}.empty{text-align:center;padding:20px 8px;color:var(--muted);font-size:13px}.hidden{display:none!important}.weightbig{font-size:34px;font-weight:800}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.historyrow{display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line);font-size:14px}.pill{background:var(--soft);color:var(--green);border-radius:99px;padding:5px 9px;font-size:11px;font-weight:700}.danger{color:var(--red)}.footer{text-align:center;color:#9aa69e;font-size:10px;letter-spacing:1px;margin:24px 0 0}
+@media(min-width:540px){.wrap{padding-top:28px}.card{padding:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="top"><div><div class="brand">My Nutrition</div><div class="sub">MOJ DNEVNIK ISHRANE</div></div><div class="mark">🥑</div></header>
+ <nav class="tabs"><button class="tab active" data-tab="today">Danas</button><button class="tab" data-tab="history">Istorija</button><button class="tab" data-tab="weight">Težina</button></nav>
+ <main id="today">
+  <div class="datebar"><button id="prevDay" aria-label="Prethodni dan">‹</button><input id="dayPicker" type="date"><button id="nextDay" aria-label="Sledeći dan">›</button></div>
+  <section class="card hero">
+   <div class="eyebrow">UKUPNO UNETO</div><div class="calrow"><div class="cal" id="totalKcal">0</div><div class="goal">/ <span id="goalLabel">2700</span> kcal</div></div>
+   <div class="progress"><div id="progressFill"></div></div><div class="remain"><span>Preostalo do cilja</span><b id="remaining">2700 kcal</b></div>
+   <div class="macros"><div class="macro"><span>Proteini</span><b id="totalP">0 g</b></div><div class="macro"><span>Ugljeni hidrati</span><b id="totalC">0 g</b></div><div class="macro"><span>Masti</span><b id="totalF">0 g</b></div></div>
+  </section>
+  <div class="sectionhead"><span>Današnji obroci</span><span class="pill" id="mealCount">0 unosa</span></div>
+  <section class="card" id="mealList"></section>
+  <button class="primary" id="addMealBtn">＋ Dodaj obrok</button>
+  <section class="card hidden" id="mealFormCard" style="margin-top:13px">
+   <div class="sectionhead" style="margin:0 0 14px">Novi obrok <button class="iconbtn" id="closeMeal">✕</button></div>
+   <form id="mealForm">
+    <div class="formgrid">
+     <div class="field wide"><label for="mealType">Vrsta obroka</label><select id="mealType"><option>Doručak</option><option>Užina</option><option>Ručak</option><option>Večera</option><option>Ostalo</option></select></div>
+     <div class="field wide"><label for="mealFood">Šta si pojeo? Količina / gramaža</label><textarea id="mealFood" required placeholder="Npr. 3 jaja, 100 g hleba, 30 g kajmaka"></textarea></div>
+     <div class="field"><label for="mealKcal">Kalorije (kcal)</label><input id="mealKcal" type="number" min="0" step="1" required placeholder="520"></div>
+     <div class="field"><label for="mealP">Proteini (g)</label><input id="mealP" type="number" min="0" step=".1" required placeholder="30"></div>
+     <div class="field"><label for="mealC">Ugljeni hidrati (g)</label><input id="mealC" type="number" min="0" step=".1" required placeholder="45"></div>
+     <div class="field"><label for="mealF">Masti (g)</label><input id="mealF" type="number" min="0" step=".1" required placeholder="22"></div>
+    </div>
+    <p class="muted">AI obračun: kopiraj opis obroka u ChatGPT i zatraži procenu kcal, proteina, ugljenih hidrata i masti. Zatim ovde unesi dobijene vrednosti. Aplikacija ne šalje tvoje podatke eksternom AI servisu.</p>
+    <button type="button" class="secondary" id="copyPrompt" style="width:100%;margin-bottom:10px">✨ Kopiraj AI zahtev</button>
+    <button class="primary" type="submit">Sačuvaj obrok</button>
+   </form>
+  </section>
+ </main>
+ <main id="history" class="hidden">
+  <section class="card"><div class="sectionhead" style="margin-top:0">Istorija ishrane</div><p class="muted">Dnevni zbir sačuvan na ovom uređaju.</p><div id="historyList"></div></section>
+  <section class="card"><div class="sectionhead" style="margin-top:0">Podešavanja cilja</div><div class="field"><label for="goalInput">Dnevni kalorijski cilj (kcal)</label><input id="goalInput" type="number" min="500" max="10000" step="50"></div><button class="primary" id="saveGoal" style="margin-top:12px">Sačuvaj cilj</button></section>
+  <section class="card"><div class="sectionhead" style="margin-top:0">Podaci i rezervna kopija</div><p class="muted">Podaci se čuvaju lokalno u Safari pregledaču na ovom iPhone-u. Izvezi rezervnu kopiju povremeno, posebno pre promene ili resetovanja telefona.</p><div class="row"><button class="secondary" id="exportData">Izvezi podatke</button><label class="secondary" for="importFile">Uvezi kopiju</label><input class="hidden" id="importFile" type="file" accept="application/json"></div><p class="muted" id="backupMsg"></p></section>
+ </main>
+ <main id="weight" class="hidden">
+  <section class="card"><div class="eyebrow">TRENUTNA TEŽINA</div><div class="weightbig" id="latestWeight">— kg</div><p class="muted">Cilj: 75 kg</p>
+   <form id="weightForm"><div class="formgrid"><div class="field"><label for="weightValue">Težina (kg)</label><input id="weightValue" type="number" min="20" max="300" step=".1" placeholder="66.0" required></div><div class="field"><label for="weightDate">Datum</label><input id="weightDate" type="date" required></div></div><button class="primary" style="margin-top:12px">Sačuvaj merenje</button></form>
+  </section>
+  <section class="card"><div class="sectionhead" style="margin-top:0">Istorija merenja</div><div id="weightList"></div></section>
+ </main>
+ <div class="footer">MY NUTRITION TRACKER · YOUR DAILY PROGRESS</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const KEY='myNutritionTracker_v1';
+let data={meals:{},weights:[],goal:2700};
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object')data={...data,...saved}}catch(e){}
+let selectedDate=todayISO();
+function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
+function dayMeals(date=selectedDate){return data.meals[date]||[]}
+function sumMeals(items){return items.reduce((s,m)=>({k:s.k+Number(m.kcal||0),p:s.p+Number(m.p||0),c:s.c+Number(m.c||0),f:s.f+Number(m.f||0)}),{k:0,p:0,c:0,f:0})}
+function fmt(n){return Math.round(n*10)/10}
+function renderToday(){
+ $('dayPicker').value=selectedDate;const items=dayMeals(),s=sumMeals(items),goal=Number(data.goal)||2700;
+ $('totalKcal').textContent=Math.round(s.k).toLocaleString('sr-RS');$('goalLabel').textContent=goal.toLocaleString('sr-RS');$('progressFill').style.width=Math.min(100,s.k/goal*100)+'%';$('remaining').textContent=Math.max(0,Math.round(goal-s.k)).toLocaleString('sr-RS')+' kcal';
+ $('totalP').textContent=fmt(s.p)+' g';$('totalC').textContent=fmt(s.c)+' g';$('totalF').textContent=fmt(s.f)+' g';$('mealCount').textContent=items.length+' unosa';
+ const groups=['Doručak','Užina','Ručak','Večera','Ostalo'];$('mealList').innerHTML='';
+ if(!items.length){$('mealList').innerHTML='<div class="empty">Još nema unetih obroka za ovaj dan.<br>Dodaj prvi obrok ispod.</div>';return}
+ groups.forEach(group=>{const subset=items.filter(m=>m.type===group);if(!subset.length)return;const block=document.createElement('div');block.innerHTML=`<div class="row" style="font-weight:750;margin:2px 0 8px"><span>${group}</span><span style="color:var(--muted);font-size:12px">${Math.round(sumMeals(subset).k)} kcal</span></div>`;
+ subset.forEach(m=>{const el=document.createElement('div');el.className='meal';const name=document.createElement('div');name.className='mealhead';const left=document.createElement('span');left.textContent=m.food;const right=document.createElement('b');right.textContent=Math.round(m.kcal)+' kcal';name.append(left,right);const macros=document.createElement('div');macros.className='mealfoot';macros.textContent=`P ${fmt(m.p)} g · UH ${fmt(m.c)} g · M ${fmt(m.f)} g`;const del=document.createElement('button');del.className='smallbtn danger';del.textContent='Obriši';del.onclick=()=>{if(confirm('Obrisati ovaj obrok?')){data.meals[selectedDate]=dayMeals().filter(x=>x.id!==m.id);persist();renderAll()}};const foot=document.createElement('div');foot.className='mealfoot';foot.append(macros,del);el.append(name,foot);block.append(el)});$('mealList').append(block)});
+}
+function renderHistory(){const dates=Object.keys(data.meals).filter(d=>data.meals[d]?.length).sort().reverse();$('historyList').innerHTML='';if(!dates.length){$('historyList').innerHTML='<div class="empty">Istorija će se pojaviti kada uneseš obroke.</div>'}dates.forEach(d=>{const s=sumMeals(data.meals[d]);const row=document.createElement('div');row.className='historyrow';const a=document.createElement('div');a.innerHTML=`<b>${new Date(d+'T12:00:00').toLocaleDateString('sr-RS',{day:'2-digit',month:'long',year:'numeric'})}</b><div class="muted">${data.meals[d].length} obroka · P ${fmt(s.p)} g · UH ${fmt(s.c)} g · M ${fmt(s.f)} g</div>`;const b=document.createElement('b');b.textContent=Math.round(s.k)+' kcal';row.append(a,b);row.onclick=()=>{selectedDate=d;switchTab('today');renderToday()};row.style.cursor='pointer';$('historyList').append(row)});$('goalInput').value=data.goal||2700}
+function renderWeight(){const sorted=[...data.weights].sort((a,b)=>b.date.localeCompare(a.date));$('latestWeight').textContent=sorted.length?sorted[0].value+' kg':'— kg';$('weightDate').value=todayISO();$('weightList').innerHTML='';if(!sorted.length){$('weightList').innerHTML='<div class="empty">Još nema merenja.</div>';return}sorted.forEach(w=>{const row=document.createElement('div');row.className='historyrow';row.innerHTML=`<span>${new Date(w.date+'T12:00:00').toLocaleDateString('sr-RS',{day:'2-digit',month:'long',year:'numeric'})}</span><b>${w.value} kg</b>`;$('weightList').append(row)})}
+function renderAll(){renderToday();renderHistory();renderWeight()}
+function switchTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));['today','history','weight'].forEach(t=>$(t).classList.toggle('hidden',t!==tab))}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+$('prevDay').onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()-1);selectedDate=todayISO.call?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:'';renderToday()};
+$('nextDay').onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()+1);selectedDate=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;renderToday()};
+$('dayPicker').onchange=e=>{selectedDate=e.target.value||todayISO();renderToday()};
+$('addMealBtn').onclick=()=>{$('mealFormCard').classList.remove('hidden');$('mealFood').focus()};
+$('closeMeal').onclick=()=>$('mealFormCard').classList.add('hidden');
+$('mealForm').onsubmit=e=>{e.preventDefault();const m={id:Date.now(),type:$('mealType').value,food:$('mealFood').value.trim(),kcal:Number($('mealKcal').value),p:Number($('mealP').value),c:Number($('mealC').value),f:Number($('mealF').value)};if(!data.meals[selectedDate])data.meals[selectedDate]=[];data.meals[selectedDate].push(m);persist();e.target.reset();$('mealFormCard').classList.add('hidden');renderAll()};
+$('copyPrompt').onclick=async()=>{const prompt=`Proceni nutritivne vrednosti ovog obroka koristeći realne prosečne vrednosti. Vrati samo ukupno: kcal, proteini (g), ugljeni hidrati (g), masti (g). U obzir uzmi navedene količine. Obrok: ${$('mealFood').value}`;try{await navigator.clipboard.writeText(prompt);$('copyPrompt').textContent='✓ AI zahtev kopiran';setTimeout(()=>$('copyPrompt').textContent='✨ Kopiraj AI zahtev',1800)}catch(e){alert(prompt)}};
+$('saveGoal').onclick=()=>{const v=Number($('goalInput').value);if(v>=500&&v<=10000){data.goal=v;persist();renderAll();$('backupMsg').textContent='Cilj je sačuvan.'}else alert('Unesi cilj između 500 i 10.000 kcal.')};
+$('weightForm').onsubmit=e=>{e.preventDefault();const v=Number($('weightValue').value),d=$('weightDate').value;if(v<20||v>300||!d)return;data.weights=data.weights.filter(w=>w.date!==d);data.weights.push({date:d,value:v});persist();e.target.reset();renderAll()};
+$('exportData').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-nutrition-backup-'+todayISO()+'.json';a.click();URL.revokeObjectURL(a.href);$('backupMsg').textContent='Rezervna kopija je preuzeta.'};
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const imported=JSON.parse(await f.text());if(!imported||typeof imported!=='object'||!imported.meals||!Array.isArray(imported.weights))throw Error();if(confirm('Uvoz će zameniti trenutne podatke. Nastaviti?')){data={...data,...imported};persist();renderAll();$('backupMsg').textContent='Podaci su uspešno uvezeni.'}}catch(err){alert('Fajl nije ispravna My Nutrition rezervna kopija.')}e.target.value=''};
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+renderAll();
+</script>
+</body></html>
