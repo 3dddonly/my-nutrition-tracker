@@ -26,8 +26,8 @@
  <main id="today">
   <div class="datebar"><button id="prevDay" aria-label="Prethodni dan">‹</button><input id="dayPicker" type="date"><button id="nextDay" aria-label="Sledeći dan">›</button></div>
   <section class="card hero">
-   <div class="eyebrow">UKUPNO UNETO</div><div class="calrow"><div class="cal" id="totalKcal">0</div><div class="goal">/ <span id="goalLabel">2700</span> kcal</div></div>
-   <div class="progress"><div id="progressFill"></div></div><div class="remain"><span>Preostalo do cilja</span><b id="remaining">2700 kcal</b></div>
+   <div class="eyebrow">UKUPNO UNETO</div><div class="calrow"><div class="cal" id="totalKcal">0</div><div class="goal">/ <span id="goalLabel">3200</span> kcal</div></div>
+   <div class="progress"><div id="progressFill"></div></div><div class="remain"><span>Preostalo do cilja</span><b id="remaining">3200 kcal</b></div>
    <div class="macros"><div class="macro"><span>Proteini</span><b id="totalP">0 g</b></div><div class="macro"><span>Ugljeni hidrati</span><b id="totalC">0 g</b></div><div class="macro"><span>Masti</span><b id="totalF">0 g</b></div></div>
   </section>
   <div class="sectionhead"><span>Današnji obroci</span><span class="pill" id="mealCount">0 unosa</span></div>
@@ -67,7 +67,7 @@
 const $=id=>document.getElementById(id);
 const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const KEY='myNutritionTracker_v1';
-let data={meals:{},weights:[],goal:2700};
+let data={meals:{},weights:[],goal:3200};
 try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object')data={...data,...saved}}catch(e){}
 let selectedDate=todayISO();
 function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
@@ -75,7 +75,7 @@ function dayMeals(date=selectedDate){return data.meals[date]||[]}
 function sumMeals(items){return items.reduce((s,m)=>({k:s.k+Number(m.kcal||0),p:s.p+Number(m.p||0),c:s.c+Number(m.c||0),f:s.f+Number(m.f||0)}),{k:0,p:0,c:0,f:0})}
 function fmt(n){return Math.round(n*10)/10}
 function renderToday(){
- $('dayPicker').value=selectedDate;const items=dayMeals(),s=sumMeals(items),goal=Number(data.goal)||2700;
+ $('dayPicker').value=selectedDate;const items=dayMeals(),s=sumMeals(items),goal=Number(data.goal)||3200;
  $('totalKcal').textContent=Math.round(s.k).toLocaleString('sr-RS');$('goalLabel').textContent=goal.toLocaleString('sr-RS');$('progressFill').style.width=Math.min(100,s.k/goal*100)+'%';$('remaining').textContent=Math.max(0,Math.round(goal-s.k)).toLocaleString('sr-RS')+' kcal';
  $('totalP').textContent=fmt(s.p)+' g';$('totalC').textContent=fmt(s.c)+' g';$('totalF').textContent=fmt(s.f)+' g';$('mealCount').textContent=items.length+' unosa';
  const groups=['Doručak','Užina','Ručak','Večera','Ostalo'];$('mealList').innerHTML='';
@@ -83,7 +83,7 @@ function renderToday(){
  groups.forEach(group=>{const subset=items.filter(m=>m.type===group);if(!subset.length)return;const block=document.createElement('div');block.innerHTML=`<div class="row" style="font-weight:750;margin:2px 0 8px"><span>${group}</span><span style="color:var(--muted);font-size:12px">${Math.round(sumMeals(subset).k)} kcal</span></div>`;
  subset.forEach(m=>{const el=document.createElement('div');el.className='meal';const name=document.createElement('div');name.className='mealhead';const left=document.createElement('span');left.textContent=m.food;const right=document.createElement('b');right.textContent=Math.round(m.kcal)+' kcal';name.append(left,right);const macros=document.createElement('div');macros.className='mealfoot';macros.textContent=`P ${fmt(m.p)} g · UH ${fmt(m.c)} g · M ${fmt(m.f)} g`;const del=document.createElement('button');del.className='smallbtn danger';del.textContent='Obriši';del.onclick=()=>{if(confirm('Obrisati ovaj obrok?')){data.meals[selectedDate]=dayMeals().filter(x=>x.id!==m.id);persist();renderAll()}};const foot=document.createElement('div');foot.className='mealfoot';foot.append(macros,del);el.append(name,foot);block.append(el)});$('mealList').append(block)});
 }
-function renderHistory(){const dates=Object.keys(data.meals).filter(d=>data.meals[d]?.length).sort().reverse();$('historyList').innerHTML='';if(!dates.length){$('historyList').innerHTML='<div class="empty">Istorija će se pojaviti kada uneseš obroke.</div>'}dates.forEach(d=>{const s=sumMeals(data.meals[d]);const row=document.createElement('div');row.className='historyrow';const a=document.createElement('div');a.innerHTML=`<b>${new Date(d+'T12:00:00').toLocaleDateString('sr-RS',{day:'2-digit',month:'long',year:'numeric'})}</b><div class="muted">${data.meals[d].length} obroka · P ${fmt(s.p)} g · UH ${fmt(s.c)} g · M ${fmt(s.f)} g</div>`;const b=document.createElement('b');b.textContent=Math.round(s.k)+' kcal';row.append(a,b);row.onclick=()=>{selectedDate=d;switchTab('today');renderToday()};row.style.cursor='pointer';$('historyList').append(row)});$('goalInput').value=data.goal||2700}
+function renderHistory(){const dates=Object.keys(data.meals).filter(d=>data.meals[d]?.length).sort().reverse();$('historyList').innerHTML='';if(!dates.length){$('historyList').innerHTML='<div class="empty">Istorija će se pojaviti kada uneseš obroke.</div>'}dates.forEach(d=>{const s=sumMeals(data.meals[d]);const row=document.createElement('div');row.className='historyrow';const a=document.createElement('div');a.innerHTML=`<b>${new Date(d+'T12:00:00').toLocaleDateString('sr-RS',{day:'2-digit',month:'long',year:'numeric'})}</b><div class="muted">${data.meals[d].length} obroka · P ${fmt(s.p)} g · UH ${fmt(s.c)} g · M ${fmt(s.f)} g</div>`;const b=document.createElement('b');b.textContent=Math.round(s.k)+' kcal';row.append(a,b);row.onclick=()=>{selectedDate=d;switchTab('today');renderToday()};row.style.cursor='pointer';$('historyList').append(row)});$('goalInput').value=data.goal||3200}
 function renderWeight(){const sorted=[...data.weights].sort((a,b)=>b.date.localeCompare(a.date));$('latestWeight').textContent=sorted.length?sorted[0].value+' kg':'— kg';$('weightDate').value=todayISO();$('weightList').innerHTML='';if(!sorted.length){$('weightList').innerHTML='<div class="empty">Još nema merenja.</div>';return}sorted.forEach(w=>{const row=document.createElement('div');row.className='historyrow';row.innerHTML=`<span>${new Date(w.date+'T12:00:00').toLocaleDateString('sr-RS',{day:'2-digit',month:'long',year:'numeric'})}</span><b>${w.value} kg</b>`;$('weightList').append(row)})}
 function renderAll(){renderToday();renderHistory();renderWeight()}
 function switchTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));['today','history','weight'].forEach(t=>$(t).classList.toggle('hidden',t!==tab))}
