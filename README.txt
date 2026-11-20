@@ -21,4 +21,4 @@ DATA AND PRIVACY
 - Data does not automatically sync between devices.
 - In the History tab use Export data regularly to download a JSON backup.
 - Import backup restores a previously exported JSON file.
-- The AI prompt button copies a prompt for ChatGPT. The app itself does not call an AI API or estimate macros automatically; paste the prompt into ChatGPT, then enter the estimated numbers in the app.
+- Meal entry now calculates estimated calories, protein, carbohydrates and fat automatically from the built-in food database. Enter quantities such as “3 jaja, 100 g hleba, 30 g kajmaka”. Values are estimates based on average nutrition data; uncommon foods or branded products may not be recognized. The default daily calorie goal is 3,200 kcal. Existing saved entries are preserved; an old 2,700 kcal goal is migrated to 3,200 kcal.
