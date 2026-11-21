@@ -64,7 +64,7 @@ const $=id=>document.getElementById(id);
 const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const KEY='myNutritionTracker_v1';
 let data={meals:{},weights:[],goal:3200};
-try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object')data={...data,...saved};if(Number(data.goal)===2700)data.goal=3200}catch(e){}
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object')data={...data,...saved};if(Number(data.goal)===2700)data.goal=3200;if(Number(data.goal)===2700)data.goal=3200}catch(e){}
 let selectedDate=todayISO();
 function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
 function dayMeals(date=selectedDate){return data.meals[date]||[]}
@@ -77,7 +77,7 @@ function renderToday(){
  const groups=['Doručak','Užina','Ručak','Večera','Ostalo'];$('mealList').innerHTML='';
  if(!items.length){$('mealList').innerHTML='<div class="empty">Još nema unetih obroka za ovaj dan.<br>Dodaj prvi obrok ispod.</div>';return}
  groups.forEach(group=>{const subset=items.filter(m=>m.type===group);if(!subset.length)return;const block=document.createElement('div');block.innerHTML=`<div class="row" style="font-weight:750;margin:2px 0 8px"><span>${group}</span><span style="color:var(--muted);font-size:12px">${Math.round(sumMeals(subset).k)} kcal</span></div>`;
- subset.forEach(m=>{const el=document.createElement('div');el.className='meal';const name=document.createElement('div');name.className='mealhead';const left=document.createElement('span');left.textContent=m.food;const right=document.createElement('b');right.textContent=Math.round(m.kcal)+' kcal';name.append(left,right);const macros=document.createElement('div');macros.className='mealfoot';macros.textContent=`P ${fmt(m.p)} g · UH ${fmt(m.c)} g · M ${fmt(m.f)} g`;const del=document.createElement('button');del.className='smallbtn danger';del.textContent='Obriši';del.onclick=()=>{if(confirm('Obrisati ovaj obrok?')){data.meals[selectedDate]=dayMeals().filter(x=>x.id!==m.id);persist();renderAll()}};const foot=document.createElement('div');foot.className='mealfoot';foot.append(macros,del);el.append(name,foot);block.append(el)});$('mealList').append(block)});
+ subset.forEach(m=>{const el=document.createElement('div');el.className='meal';const name=document.createElement('div');name.className='mealhead';const left=document.createElement('span');left.textContent=m.food;const right=document.createElement('b');right.textContent=Math.round(m.kcal)+' kcal';name.append(left,right);const macros=document.createElement('div');macros.className='mealfoot';macros.textContent=`P ${fmt(m.p)} g · UH ${fmt(m.c)} g · M ${fmt(m.f)} g`;let detail=null;if(m.details?.length){detail=document.createElement('div');detail.className='muted';detail.textContent=m.details.map(d=>`${d.name} ${d.grams} g`).join(' · ');}const del=document.createElement('button');del.className='smallbtn danger';del.textContent='Obriši';del.onclick=()=>{if(confirm('Obrisati ovaj obrok?')){data.meals[selectedDate]=dayMeals().filter(x=>x.id!==m.id);persist();renderAll()}};const foot=document.createElement('div');foot.className='mealfoot';foot.append(macros,del);el.append(name,foot);if(detail)el.append(detail);block.append(el)});$('mealList').append(block)});
 }
 function renderHistory(){const dates=Object.keys(data.meals).filter(d=>data.meals[d]?.length).sort().reverse();$('historyList').innerHTML='';if(!dates.length){$('historyList').innerHTML='<div class="empty">Istorija će se pojaviti kada uneseš obroke.</div>'}dates.forEach(d=>{const s=sumMeals(data.meals[d]);const row=document.createElement('div');row.className='historyrow';const a=document.createElement('div');a.innerHTML=`<b>${new Date(d+'T12:00:00').toLocaleDateString('sr-RS',{day:'2-digit',month:'long',year:'numeric'})}</b><div class="muted">${data.meals[d].length} obroka · P ${fmt(s.p)} g · UH ${fmt(s.c)} g · M ${fmt(s.f)} g</div>`;const b=document.createElement('b');b.textContent=Math.round(s.k)+' kcal';row.append(a,b);row.onclick=()=>{selectedDate=d;switchTab('today');renderToday()};row.style.cursor='pointer';$('historyList').append(row)});$('goalInput').value=data.goal||3200}
 function renderWeight(){const sorted=[...data.weights].sort((a,b)=>b.date.localeCompare(a.date));$('latestWeight').textContent=sorted.length?sorted[0].value+' kg':'— kg';$('weightDate').value=todayISO();$('weightList').innerHTML='';if(!sorted.length){$('weightList').innerHTML='<div class="empty">Još nema merenja.</div>';return}sorted.forEach(w=>{const row=document.createElement('div');row.className='historyrow';row.innerHTML=`<span>${new Date(w.date+'T12:00:00').toLocaleDateString('sr-RS',{day:'2-digit',month:'long',year:'numeric'})}</span><b>${w.value} kg</b>`;$('weightList').append(row)})}
@@ -91,11 +91,11 @@ $('addMealBtn').onclick=()=>{$('mealFormCard').classList.remove('hidden');$('mea
 $('closeMeal').onclick=()=>$('mealFormCard').classList.add('hidden');
 // Lokalna baza: prosečne vrednosti na 100 g jestivog dela. Rezultati su procene.
 const FOOD_DB=[
- {n:'jaje',a:['jaja','jaje','jajeta'],k:143,p:12.6,c:0.7,f:9.5,u:60},
+ {n:'jaje',a:['jaja','jaje','jajeta','jaja cela'],k:143,p:12.6,c:0.7,f:9.5,u:60},
  {n:'belance',a:['belance','belanca'],k:52,p:10.9,c:0.7,f:0.2,u:33},
- {n:'hleb beli',a:['beli hleb','hleba','hleb'],k:265,p:8.5,c:49,f:3.2},
+ {n:'hleb beli',a:['beli hleb','hleba','hleb','belog hleba'],k:265,p:8.5,c:49,f:3.2,u:35,slice:35},
  {n:'integralni hleb',a:['integralni hleb','crni hleb'],k:247,p:9,c:41,f:3.5},
- {n:'ovsene pahuljice',a:['ovsene pahuljice','ovsene','ovsena kasa'],k:389,p:16.9,c:66.3,f:6.9},
+ {n:'ovsene pahuljice',a:['ovsene pahuljice','ovsene','ovsena kasa','ovsenih pahuljica'],k:389,p:16.9,c:66.3,f:6.9},
  {n:'pirinač kuvan',a:['kuvani pirinac','kuvan pirinac','pirinac'],k:130,p:2.7,c:28.2,f:0.3},
  {n:'pileća prsa',a:['pileca prsa','pileci file','piletina','pilece meso'],k:165,p:31,c:0,f:3.6},
  {n:'ćuretina',a:['curka','ćuretina','curetina'],k:135,p:29,c:0,f:1.6},
@@ -107,7 +107,7 @@ const FOOD_DB=[
  {n:'grčki jogurt',a:['grcki jogurt','grčki jogurt'],k:97,p:9,c:3.9,f:5},
  {n:'jogurt',a:['jogurt'],k:60,p:3.5,c:4.7,f:3.2},
  {n:'kefir',a:['kefir'],k:55,p:3.3,c:4.8,f:2.5},
- {n:'kajmak',a:['kajmak'],k:600,p:2,c:3,f:63},
+ {n:'kajmak',a:['kajmak','kajmaka'],k:600,p:2,c:3,f:63,tbsp:20},
  {n:'mladi sir',a:['mladi sir','svezi sir'],k:98,p:11.1,c:3.4,f:4.3},
  {n:'gauda',a:['gauda','gouda'],k:356,p:25,c:2.2,f:27},
  {n:'feta',a:['feta'],k:265,p:14,c:4,f:21},
@@ -141,22 +141,109 @@ const FOOD_DB=[
  {n:'zelena salata',a:['zelena salata','salata'],k:15,p:1.4,c:2.9,f:0.2},
  {n:'majonez',a:['majonez'],k:680,p:1,c:1,f:75},
  {n:'ajvar',a:['ajvar'],k:80,p:1.5,c:8,f:4.5},
- {n:'kiselo mleko',a:['kiselo mleko'],k:60,p:3.2,c:4.5,f:3.2}
+ {n:'kiselo mleko',a:['kiselo mleko'],k:60,p:3.2,c:4.5,f:3.2},
+ {n:'beli pirinač kuvan',a:['beli pirinac','pirinac kuvan','kuvani pirinac'],k:130,p:2.7,c:28.2,f:0.3},
+ {n:'hleb tost',a:['tost hleb','tost'],k:265,p:9,c:49,f:3.2,u:25,slice:25},
+ {n:'ražani hleb',a:['razani hleb','razeni hleb'],k:259,p:8.5,c:48,f:3.3,u:35,slice:35},
+ {n:'ćureća prsa',a:['cureca prsa','cureca sunka','pureca prsa'],k:110,p:20,c:2,f:2},
+ {n:'šunka',a:['sunka','pileca sunka'],k:145,p:20,c:2,f:6},
+ {n:'slanina',a:['slanina','panceta'],k:541,p:37,c:1.4,f:42},
+ {n:'kobasica',a:['kobasica','kobasice'],k:301,p:12,c:2,f:27},
+ {n:'kukuruzne pahuljice',a:['kukuruzne pahuljice','corn flakes'],k:357,p:7.5,c:84,f:0.4},
+ {n:'granola',a:['granola','musli'],k:450,p:10,c:64,f:16},
+ {n:'urme',a:['urma','urme','datule'],k:282,p:2.5,c:75,f:0.4,u:8},
+ {n:'jagode',a:['jagoda','jagode'],k:32,p:0.7,c:7.7,f:0.3,u:12},
+ {n:'borovnice',a:['borovnica','borovnice'],k:57,p:0.7,c:14.5,f:0.3,u:5},
+ {n:'grožđe',a:['grozdje','grozdja','grozdje'],k:69,p:0.7,c:18.1,f:0.2,u:5},
+ {n:'kruška',a:['kruska','kruske'],k:57,p:0.4,c:15.2,f:0.1,u:170},
+ {n:'kivi',a:['kivi'],k:61,p:1.1,c:14.7,f:0.5,u:75},
+ {n:'mandarina',a:['mandarina','mandarine'],k:53,p:0.8,c:13.3,f:0.3,u:80},
+ {n:'karfiol',a:['karfiol'],k:25,p:1.9,c:5,f:0.3},
+ {n:'tikvice',a:['tikvica','tikvice'],k:17,p:1.2,c:3.1,f:0.3},
+ {n:'pečurke',a:['pecurke','sampinjoni','šampinjoni'],k:22,p:3.1,c:3.3,f:0.3},
+ {n:'spanać',a:['spanac','spanać'],k:23,p:2.9,c:3.6,f:0.4},
+ {n:'grašak',a:['grasak','grašak'],k:81,p:5.4,c:14.5,f:0.4},
+ {n:'batak pileći',a:['pileci batak','batak'],k:215,p:27,c:0,f:11},
+ {n:'mlevena junetina',a:['mlevena junetina','mleveno meso'],k:254,p:17,c:0,f:20},
+ {n:'tofu',a:['tofu'],k:144,p:17,c:3,f:9},
+ {n:'kikiriki',a:['kikiriki'],k:567,p:25.8,c:16.1,f:49.2,u:1},
+ {n:'lešnik',a:['lesnik','lesnici'],k:628,p:15,c:17,f:61,u:1},
+ {n:'indijski orah',a:['indijski orah','indijski orasi'],k:553,p:18.2,c:30.2,f:43.9,u:1},
+ {n:'susam',a:['susam'],k:573,p:17.7,c:23.4,f:49.7},
+ {n:'chia semenke',a:['chia','chia semenke'],k:486,p:16.5,c:42.1,f:30.7},
+ {n:'laneno seme',a:['laneno seme','lan'],k:534,p:18.3,c:28.9,f:42.2},
+ {n:'džem',a:['dzem','džem'],k:250,p:0.4,c:65,f:0.1},
+ {n:'ketchup',a:['kecap','kečap','ketchup'],k:112,p:1.3,c:26,f:0.2},
+ {n:'senf',a:['senf','mustard'],k:66,p:4.4,c:6,f:3.3},
+ {n:'sok od pomorandže',a:['sok od pomorandze','cedjena pomorandza'],k:45,p:0.7,c:10.4,f:0.2,mlFactor:1},
+ {n:'proteinski puding',a:['proteinski puding'],k:80,p:10,c:6,f:1.5},
+ {n:'kiseli krastavci',a:['kiseli krastavci','kisel krastavac'],k:12,p:0.5,c:2.4,f:0.2},
+ {n:'krem sir',a:['krem sir','abc sir'],k:250,p:6,c:4,f:24},
+ {n:'pavlaka',a:['pavlaka','kisela pavlaka'],k:190,p:2.5,c:3.5,f:18},
+ {n:'parmezan',a:['parmezan','parmesan'],k:431,p:38,c:4,f:29},
+ {n:'med',a:['med'],k:304,p:0.3,c:82.4,f:0,tsp:7,tbsp:21}
 ];
-function norm(t){return t.toLocaleLowerCase('sr-Latn').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').trim()}
-function parseMeal(text){let totals={k:0,p:0,c:0,f:0},unknown=[],parts=text.split(/[,;+\n]+/).map(x=>x.trim()).filter(Boolean),details=[];
- for(const part of parts){const m=part.match(/^(\d+(?:[.,]\d+)?)\s*(kg|g|gr|grama|gram|ml|l|komada|kom|kasika|kasike|kasicica|kasicice|slice|kriske)?\s*(.*)$/i);if(!m){unknown.push(part);continue}let qty=Number(m[1].replace(',','.')),unit=norm(m[2]||''),name=norm(m[3]);let food=FOOD_DB.filter(f=>f.a.some(a=>name===norm(a)||name.startsWith(norm(a)+' '))).sort((a,b)=>Math.max(...b.a.map(x=>norm(x).length))-Math.max(...a.a.map(x=>norm(x).length)))[0];
- if(!food){unknown.push(part);continue}let grams;if(unit==='kg')grams=qty*1000;else if(['g','gr','grama','gram'].includes(unit))grams=qty;else if(unit==='ml')grams=qty;else if(unit==='l')grams=qty*1000;else if(['kasika','kasike'].includes(unit))grams=qty*(food.u||15);else if(['kasicica','kasicice'].includes(unit))grams=qty*(food.u||5);else if(['kriske','slice'].includes(unit))grams=qty*(food.u||30);else grams=qty*(food.u||100);
- const factor=grams/100;for(const key of ['k','p','c','f'])totals[key]+=food[key]*factor;details.push(`${food.n}: ${fmt(grams)} g`);
- }return {totals,unknown,details};}
-function updatePreview(){const result=parseMeal($('mealFood').value);const t=result.totals;$('previewValues').textContent=`${Math.round(t.k)} kcal  ·  Proteini ${fmt(t.p)} g  ·  UH ${fmt(t.c)} g  ·  Masti ${fmt(t.f)} g`;$('unknownFoods').textContent=result.unknown.length?'Nije prepoznato: '+result.unknown.join(', ')+'. Proveri naziv ili unesi namirnicu jednostavnijim nazivom.':'';return result}
+function norm(t){return String(t||'').toLocaleLowerCase('sr-Latn').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/č|ć/g,'c').replace(/š/g,'s').replace(/ž/g,'z').replace(/\s+/g,' ').trim()}
+function findFood(name){
+ const n=norm(name);
+ const matches=[];
+ for(const food of FOOD_DB){
+  for(const alias of food.a){const a=norm(alias);if(n===a||n.startsWith(a+' ')||n.startsWith(a))matches.push({food,len:a.length});}
+ }
+ matches.sort((x,y)=>y.len-x.len);
+ return matches.length?matches[0].food:null;
+}
+function parseMeal(text){
+ const totals={k:0,p:0,c:0,f:0},unknown=[],details=[];
+ const parts=String(text||'').split(/[,;\n+]+/).map(x=>x.trim()).filter(Boolean);
+ for(let part of parts){
+  // Accept formats such as "3 jaja", "100 g hleba", "2 kasike kikiriki putera", and a single item such as "banana".
+  let m=part.match(/^\s*(\d+\/\d+|\d+(?:[.,]\d+)?)\s*(kg|kilograma|kilogram|gr|g|grama|gram|ml|mililitra|l|komada|kom|komad|kašika|kašike|kasika|kasike|kašičica|kašičice|kasici|kasicica|kasicice|kriška|kriške|kriska|kriske|parce|parceta|slice|slices)?\s*(.*?)\s*$/i);
+  let qty=1,unit='',name=part;
+  if(m){qty=m[1].includes('/')?Number(m[1].split('/')[0])/Number(m[1].split('/')[1]):Number(m[1].replace(',','.'));unit=norm(m[2]||'');name=m[3]||'';}
+  const food=findFood(name);
+  if(!food){unknown.push(part);continue;}
+  let grams;
+  if(['kg','kilograma','kilogram'].includes(unit))grams=qty*1000;
+  else if(['g','gr','grama','gram'].includes(unit))grams=qty;
+  else if(['ml','mililitra'].includes(unit))grams=qty*(food.mlFactor||1);
+  else if(unit==='l')grams=qty*1000*(food.mlFactor||1);
+  else if(['kasika','kasike'].includes(unit))grams=qty*(food.tbsp||15);
+  else if(['kasici','kasicica','kasicice'].includes(unit))grams=qty*(food.tsp||5);
+  else if(['kriska','kriske','parce','parceta','slice','slices'].includes(unit))grams=qty*(food.slice||food.u||30);
+  else grams=qty*(food.u||100);
+  if(!Number.isFinite(grams)||grams<=0){unknown.push(part);continue;}
+  const factor=grams/100;
+  const item={name:food.n,grams:fmt(grams),k:food.k*factor,p:food.p*factor,c:food.c*factor,f:food.f*factor};
+  for(const key of ['k','p','c','f'])totals[key]+=item[key];
+  details.push(item);
+ }
+ return {totals,unknown,details};
+}
+function updatePreview(){
+ const result=parseMeal($('mealFood').value),t=result.totals;
+ $('previewValues').textContent=result.details.length?`${Math.round(t.k)} kcal  ·  Proteini ${fmt(t.p)} g  ·  UH ${fmt(t.c)} g  ·  Masti ${fmt(t.f)} g`:'Unesi namirnice i količine.';
+ $('previewDetails').textContent=result.details.map(d=>`${d.name} (${d.grams} g): ${Math.round(d.k)} kcal · P ${fmt(d.p)} g · UH ${fmt(d.c)} g · M ${fmt(d.f)} g`).join(' | ');
+ $('unknownFoods').textContent=result.unknown.length?'Nije prepoznato: '+result.unknown.join(', ')+'. Ispravi naziv ili ukloni neprepoznatu stavku pre čuvanja.':'';
+ return result;
+}
 $('mealFood').addEventListener('input',updatePreview);
-$('mealForm').onsubmit=e=>{e.preventDefault();const result=updatePreview();if(!result.details.length){alert('Unesi bar jednu prepoznatu namirnicu sa količinom.');return}if(result.unknown.length&&!confirm('Neke namirnice nisu prepoznate: '+result.unknown.join(', ')+'. Sačuvati samo prepoznate namirnice?'))return;const t=result.totals;const m={id:Date.now(),type:$('mealType').value,food:$('mealFood').value.trim(),kcal:fmt(t.k),p:fmt(t.p),c:fmt(t.c),f:fmt(t.f),details:result.details};if(!data.meals[selectedDate])data.meals[selectedDate]=[];data.meals[selectedDate].push(m);persist();e.target.reset();$('previewValues').textContent='Unesi namirnice i količine.';$('unknownFoods').textContent='';$('mealFormCard').classList.add('hidden');renderAll()};
+$('mealForm').onsubmit=e=>{
+ e.preventDefault();const result=updatePreview();
+ if(!result.details.length){alert('Unesi bar jednu prepoznatu namirnicu.');return;}
+ if(result.unknown.length){alert('Aplikacija nije prepoznala: '+result.unknown.join(', ')+'. Ovaj obrok nije sačuvan da ne bi dobio netačan zbir. Ispravi ili ukloni te stavke.');return;}
+ const t=result.totals;
+ const m={id:Date.now(),type:$('mealType').value,food:$('mealFood').value.trim(),kcal:fmt(t.k),p:fmt(t.p),c:fmt(t.c),f:fmt(t.f),details:result.details};
+ if(!data.meals[selectedDate])data.meals[selectedDate]=[];
+ data.meals[selectedDate].push(m);persist();e.target.reset();
+ $('previewValues').textContent='Unesi namirnice i količine.';$('previewDetails').textContent='';$('unknownFoods').textContent='';
+ $('mealFormCard').classList.add('hidden');renderAll();
+};
 $('saveGoal').onclick=()=>{const v=Number($('goalInput').value);if(v>=500&&v<=10000){data.goal=v;persist();renderAll();$('backupMsg').textContent='Cilj je sačuvan.'}else alert('Unesi cilj između 500 i 10.000 kcal.')};
 $('weightForm').onsubmit=e=>{e.preventDefault();const v=Number($('weightValue').value),d=$('weightDate').value;if(v<20||v>300||!d)return;data.weights=data.weights.filter(w=>w.date!==d);data.weights.push({date:d,value:v});persist();e.target.reset();renderAll()};
 $('exportData').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-nutrition-backup-'+todayISO()+'.json';a.click();URL.revokeObjectURL(a.href);$('backupMsg').textContent='Rezervna kopija je preuzeta.'};
 $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const imported=JSON.parse(await f.text());if(!imported||typeof imported!=='object'||!imported.meals||!Array.isArray(imported.weights))throw Error();if(confirm('Uvoz će zameniti trenutne podatke. Nastaviti?')){data={...data,...imported};persist();renderAll();$('backupMsg').textContent='Podaci su uspešno uvezeni.'}}catch(err){alert('Fajl nije ispravna My Nutrition rezervna kopija.')}e.target.value=''};
-if('serviceWorker'in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(r=>r.update()).catch(()=>{}));
 renderAll();
 </script>
 </body></html>
